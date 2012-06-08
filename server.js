@@ -37,19 +37,17 @@ io.sockets.on('connection', function(socket){
 			}
 	},1000);
 
-	if(clients.length > 1){
+	if(io.sockets.clients().length > 1){
 		socket.broadcast.emit('requestingStreams', {requestingUser:socket.id});
 	}
 	
-	socket.on('new',function(data){
-		socket.broadcast.emit('new user connected');
+	socket.on('userNotBroadcasting',function(data){
+		io.sockets.socket(data).emit('apologyNoVideo', 'Sorry this user is not broadcasting.'); 
 	});
 
-	socket.on('set nickname', function (name) {
-   		socket.set('nickname', name, function () { 
-   			socket.emit('ready');
-   		});
-  	});
+	socket.on('sendingVideoStream',function(data){
+		io.sockets.socket(data.requestedUser).emit('watchMyStream', { stream:data.video, message:'here is my requested video stream', user:socket.id }); 
+	});
 
   	socket.on('msg', function (data) {
     	socket.get('nickname', function (err, name) {

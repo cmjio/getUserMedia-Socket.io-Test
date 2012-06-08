@@ -17,16 +17,27 @@ $(function() {
     });
 
     socket.on('requestingStreams',function(data){
-        //console.log(data.requestingUser);
+        console.log('requesting user is: ',data.requestingUser);
         if(camera.selfVideo != null){
             camera.requestingStreams(data.requestingUser);
         }else{
             console.log('sorry i am not broadcasting');
+            socket.emit('userNotBroadcasting',data.requestingUser);
         }
     });
 
     socket.on('userStream', function (data) {
         camera.socketStoreStreams(data);
+    });
+
+    socket.on('apologyNoVideo', function (data) {
+        console.log(data);
+    });
+
+    socket.on('watchMyStream', function (data) {
+        console.log(data.message);
+        delete data.message;
+        camera.videoStreams.push(data)
     });
 
     // Check for new users and show streams;

@@ -11,6 +11,7 @@ window.camera = {
 	userID:null,
 	userCount:0,
 	selfVideo:null,
+	selfStream:null,
 	videoStreams:[],
 
 	// Methods
@@ -34,6 +35,7 @@ window.camera = {
 		console.log('canStream:',this.canStream);
 		navigator.webkitGetUserMedia({'video':true},function(stream){
 			this.canStream = true;
+			_.selfStream = stream;
 			if (navigator.webkitGetUserMedia) {
 				var video = $('#self');
 				var blobUrl = window.webkitURL.createObjectURL(stream);
@@ -41,6 +43,10 @@ window.camera = {
       			video.controls = false;
       			_.selfVideo = blobUrl;
       			_.socketBroadcastStream(blobUrl);
+      			video.onloadedmetadata = function(e) {
+      				// Ready to go. Do some stuff.
+      				console.log(e);
+    			};
     		} else {
     			var video = $('#self');
      			video.src = stream; // Opera
@@ -65,7 +71,8 @@ window.camera = {
 
 	requestingStreams:function(userID){
 		console.log(userID+' requested stream');
-		
+		var _ = this;
+		_.socket.emit('sendingVideoStream', { video:_.selfVideo, requestedUser:userID });
 	},
 
 	// Socket Methods
