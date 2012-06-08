@@ -15,7 +15,7 @@ server.get('/', function (req, res) {
 
 server.listen(1234, function(){
 	var addr = server.address();
-	console.log('   app listening on http://' + addr.address + ':' + addr.port);
+	console.log('app listening on http://' + addr.address + ':' + addr.port);
 });	 
 
 var io = io.listen(server);
@@ -33,6 +33,7 @@ io.sockets.on('connection', function(socket){
 			if(newCount != userCount){
 				userCount = newCount;
 				socket.emit('userCount',{count:userCount});
+				//socket.emit('users',clients);
 			}
 	},1000);
 
@@ -50,6 +51,10 @@ io.sockets.on('connection', function(socket){
     	socket.get('nickname', function (err, name) {
       		socket.broadcast.emit('message',{ user:name, message:data });
     	});
-  });
+  	});
+
+  	socket.on('stream',function(data){
+  		socket.broadcast.emit('userStream', { stream:data, user:socket.id });
+  	});
 
 });
