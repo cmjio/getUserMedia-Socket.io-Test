@@ -18,7 +18,6 @@ window.camera = {
 	// Methods
 	init:function(){
 		var _ = this;
-
 		if(navigator.webkitGetUserMedia || navigator.getUserMedia){
 			_.canStream = true;
 			_.getUserMedia();
@@ -33,7 +32,6 @@ window.camera = {
 	// Start Own Webcam
 	getUserMedia:function(){
 		var _ = this;
-		console.log('canStream:',this.canStream);
 		navigator.webkitGetUserMedia({'video':true},function(stream){
 			this.canStream = true;
 			_.selfStream = stream;
@@ -71,8 +69,8 @@ window.camera = {
 	},
 
 	requestingStreams:function(userID){
-		console.log(userID+' requested stream');
 		var _ = this;
+		console.log(userID+' requested stream');
 		_.socket.emit('sendingVideoStream', { video:_.selfVideo, requestedUser:userID });
 	},
 
