@@ -8,40 +8,35 @@ $(function() {
     var counter;
 
     socket.on('connect',function() {
-        //socket.emit('new',{hello:'world'});
-        //socket.emit('set nickname', prompt('What is your nickname?'));
         camera.init();
 
     });
     
     socket.on('userCount',function(data) {
-        console.log('counter::',data.count);
         counter = data.count;
     });
 
-    socket.on('users',function(data){
-        console.log(data);
-    });
-    
-    socket.on('ready', function () {
-        console.log('Connected !');
-        //socket.emit('msg', prompt('What is your message?'));
-    });
-    
-    socket.on('message', function (message) {
-        console.log(message);
+    socket.on('requestingStreams',function(data){
+        //console.log(data.requestingUser);
+        if(camera.selfVideo != null){
+            camera.requestingStreams(data.requestingUser);
+        }else{
+            console.log('sorry i am not broadcasting');
+        }
     });
 
     socket.on('userStream', function (data) {
         camera.socketStoreStreams(data);
     });
 
+    // Check for new users and show streams;
     setInterval(function(){
-        console.log(counter,camera.userCount);
-                
         if(counter != camera.userCount){
             camera.userCount = counter;
             camera.displayUsersStreams();
+        }
+        if(camera.videoStreams.length < 1){
+            $('#friend').hide();
         }
     },1000);
 

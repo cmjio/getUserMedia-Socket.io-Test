@@ -37,6 +37,10 @@ io.sockets.on('connection', function(socket){
 			}
 	},1000);
 
+	if(clients.length > 1){
+		socket.broadcast.emit('requestingStreams', {requestingUser:socket.id});
+	}
+	
 	socket.on('new',function(data){
 		socket.broadcast.emit('new user connected');
 	});

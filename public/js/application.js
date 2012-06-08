@@ -52,6 +52,7 @@ window.camera = {
         });
 				
 	},
+
 	displayUsersStreams:function(){
 		var _ = this;
 		$.each(_.videoStreams,function(index, videoStream){
@@ -60,6 +61,11 @@ window.camera = {
 			friendVideo.attr('src',videoStream.stream);
 			console.log(friendVideo);
 		});
+	},
+
+	requestingStreams:function(userID){
+		console.log(userID+' requested stream');
+		
 	},
 
 	// Socket Methods
