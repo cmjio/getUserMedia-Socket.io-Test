@@ -12,6 +12,7 @@ window.camera = {
 	userCount:0,
 	selfVideo:null,
 	selfStream:null,
+	// Arrays
 	videoStreams:[],
 
 	// Methods
