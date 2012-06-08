@@ -5,6 +5,7 @@ $(function() {
     camera.socket = socket;
 
     var users = [];
+    var counter;
 
     socket.on('connect',function() {
         //socket.emit('new',{hello:'world'});
@@ -14,13 +15,8 @@ $(function() {
     });
     
     socket.on('userCount',function(data) {
-        console.log('userCount::',data.count);
-        setInterval(function(){
-            if(data.userCount != camera.count){
-                camera.userCount = data.count;
-                camera.displayUsersStreams();
-            }
-        },1000);
+        console.log('counter::',data.count);
+        counter = data.count;
     });
 
     socket.on('users',function(data){
@@ -39,5 +35,14 @@ $(function() {
     socket.on('userStream', function (data) {
         camera.socketStoreStreams(data);
     });
+
+    setInterval(function(){
+        console.log(counter,camera.userCount);
+                
+        if(counter != camera.userCount){
+            camera.userCount = counter;
+            camera.displayUsersStreams();
+        }
+    },1000);
 
 });

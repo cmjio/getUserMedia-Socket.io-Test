@@ -55,7 +55,7 @@ window.camera = {
 	displayUsersStreams:function(){
 		var _ = this;
 		$.each(_.videoStreams,function(index, videoStream){
-			//console.log('stream:', index, videoStream);
+			console.log('stream:', videoStream.stream);
 			var friendVideo = $('#friend');
 			friendVideo.attr('src',videoStream.stream);
 			console.log(friendVideo);
