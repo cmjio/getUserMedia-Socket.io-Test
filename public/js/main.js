@@ -28,11 +28,8 @@ $(function() {
     });
 
     socket.on('userStream', function (data) {
-        //camera.socketStoreStreams(data);
-        //camera.videoStreams.push(data);
-        //camera.videoStreams[data.user]=data.stream;
         var friendVideo = $('#friend');
-            friendVideo.attr('src',data.stream);
+        friendVideo.attr('src',data.stream);
     });
 
     socket.on('apologyNoVideo', function (data) {
