@@ -29,7 +29,10 @@ $(function() {
 
     socket.on('userStream', function (data) {
         //camera.socketStoreStreams(data);
-        camera.videoStreams.push(data);
+        //camera.videoStreams.push(data);
+        //camera.videoStreams[data.user]=data.stream;
+        var friendVideo = $('#friend');
+            friendVideo.attr('src',data.stream);
     });
 
     socket.on('apologyNoVideo', function (data) {
@@ -40,6 +43,7 @@ $(function() {
         console.log(data.message);
         delete data.message;
         camera.videoStreams.push(data);
+        camera.videoStreams[data.user] = data;
     });
 
     // Check for new users and show streams;

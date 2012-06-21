@@ -26,7 +26,11 @@ window.camera = {
 			$('#friend').show();
 		}else{
 			_.canStream = false;
-			$('#friend').show();
+			if(_.userCount > 1 && _.videoStreams.length > 0){
+				$('#friend').show();
+			}else{
+				console.log('No users broadcasting');
+			}
 		}
 	},
 
@@ -45,7 +49,7 @@ window.camera = {
       			//webkitRequestAnimationFrame(draw);
       			setInterval(function(){
       				draw();
-      			},500);
+      			},100);
 
       			function draw(){
       				var canvas = document.getElementById('selfCanvas');
@@ -77,9 +81,9 @@ window.camera = {
 			//console.log('stream:', videoStream.stream);
 			var friendVideo = $('#friend');
 			friendVideo.attr('src',videoStream.stream);
-			console.log(friendVideo);
+			//console.log(friendVideo);
 			setInterval(function(){
-				console.log(friendVideo);
+			//	console.log(friendVideo);
 			},100);
 		});
 	},
