@@ -1,7 +1,7 @@
 $(function() {
     // Stuff to do as soon as the DOM is ready;
 
-    var socket = io.connect('http://192.168.1.20:1234');
+    var socket = io.connect('http://192.168.1.43:1234');
     camera.socket = socket;
 
     var users = [];
@@ -9,6 +9,7 @@ $(function() {
 
     socket.on('connect',function() {
         camera.init();
+        document.title = 'camera app';
 
     });
     
@@ -27,7 +28,8 @@ $(function() {
     });
 
     socket.on('userStream', function (data) {
-        camera.socketStoreStreams(data);
+        //camera.socketStoreStreams(data);
+        camera.videoStreams.push(data);
     });
 
     socket.on('apologyNoVideo', function (data) {
@@ -37,7 +39,7 @@ $(function() {
     socket.on('watchMyStream', function (data) {
         console.log(data.message);
         delete data.message;
-        camera.videoStreams.push(data)
+        camera.videoStreams.push(data);
     });
 
     // Check for new users and show streams;

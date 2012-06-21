@@ -18,10 +18,11 @@ window.camera = {
 	// Methods
 	init:function(){
 		var _ = this;
+
 		if(navigator.webkitGetUserMedia || navigator.getUserMedia){
 			_.canStream = true;
 			_.getUserMedia();
-			$('#self').show();
+			$('#self').hide();
 			$('#friend').show();
 		}else{
 			_.canStream = false;
@@ -36,16 +37,28 @@ window.camera = {
 			this.canStream = true;
 			_.selfStream = stream;
 			if (navigator.webkitGetUserMedia) {
-				var video = $('#self');
+				var video =  document.getElementById('self');
 				var blobUrl = window.webkitURL.createObjectURL(stream);
-      			video.attr('src',blobUrl);
+      			video.src = blobUrl;
       			video.controls = false;
-      			_.selfVideo = blobUrl;
-      			_.socketBroadcastStream(blobUrl);
-      			video.onloadedmetadata = function(e) {
-      				// Ready to go. Do some stuff.
-      				console.log(e);
-    			};
+
+      			//webkitRequestAnimationFrame(draw);
+      			setInterval(function(){
+      				draw();
+      			},500);
+
+      			function draw(){
+      				var canvas = document.getElementById('selfCanvas');
+					var ctx = canvas.getContext('2d');
+					ctx.drawImage(video, 0, 0, 155, 115);
+					var stringData= canvas.toDataURL();
+					_.selfVideo = stringData;
+					_.socketBroadcastStream(stringData);
+					//webkitRequestAnimationFrame(draw);
+      			}
+
+      			// _.selfVideo = blobUrl;
+      			// _.socketBroadcastStream(blobUrl);
     		} else {
     			var video = $('#self');
      			video.src = stream; // Opera
@@ -61,11 +74,26 @@ window.camera = {
 	displayUsersStreams:function(){
 		var _ = this;
 		$.each(_.videoStreams,function(index, videoStream){
-			console.log('stream:', videoStream.stream);
+			//console.log('stream:', videoStream.stream);
 			var friendVideo = $('#friend');
 			friendVideo.attr('src',videoStream.stream);
 			console.log(friendVideo);
+			setInterval(function(){
+				console.log(friendVideo);
+			},100);
 		});
+	},
+
+	drawToCanvas:function(){
+		console.log('variable_or_string');
+				
+		var _ = this;
+		var video = document.getElementById('self');
+		var canvas = document.getElementById('selfCanvas');
+		var ctx = canvas.getContext('2d');
+		ctx.drawImage(video, 0, 0, 155, 115);
+		webkitRequestAnimationFrame(_.drawToCanvas);
+		
 	},
 
 	requestingStreams:function(userID){
@@ -75,15 +103,15 @@ window.camera = {
 	},
 
 	// Socket Methods
-	socketBroadcastStream:function(blob){
+	socketBroadcastStream:function(imageData){
 		var _ = this;
-		_.socket.emit('stream',blob);
+		_.socket.emit('stream',imageData);
 	},
 
 	socketStoreStreams:function(data){
 		var _ = this;
 		_.videoStreams.push(data);
-		console.log(_.videoStreams);
+		// console.log(_.videoStreams);
 	},
 
 	socketEmit:function(){},
