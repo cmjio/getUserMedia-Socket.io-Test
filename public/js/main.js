@@ -4,17 +4,41 @@ $(function() {
     var socket = io.connect('http://192.168.1.43:1234');
     camera.socket = socket;
 
+    $('#start').show();
+    $('.room,#joinroom').hide();
+
+    $('#start').find('#join').click(function(){
+        camera.initJoinRoom();
+    });
+
+    $('#start').find('#create').click(function(){
+        camera.initCreateRoom();
+    });
+
     var users = [];
     var counter;
 
     socket.on('connect',function() {
-        camera.init();
-        document.title = 'camera app';
-
+        //camera.init();
+        if(camera.roomID = null){
+            camera.start();  
+        }
     });
     
     socket.on('userCount',function(data) {
         counter = data.count;
+    });
+
+    socket.on('roomExists',function(data) {
+        console.log(data.message,data.room);   
+    });
+
+    socket.on('roomCreated',function(data) {
+        console.log(data.message, data.room);
+        $('#start, #joinroom').hide();
+        $('.room').show();
+        camera.init();
+        window.location.hash = '!/'+data.room.roomID;
     });
 
     socket.on('requestingStreams',function(data){

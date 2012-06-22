@@ -8,6 +8,8 @@ window.camera = {
 	// Boolean Values
 	canStream:false,
 	// Variables
+	roomID:null,
+	roomAccessCode:null,
 	userID:null,
 	userCount:0,
 	selfVideo:null,
@@ -32,6 +34,54 @@ window.camera = {
 				console.log('No users broadcasting');
 			}
 		}
+	},
+
+	getRoomID:function(){
+		var ask = prompt('');
+	},
+
+	start:function(){
+		var _ = this;
+		$('#start').show();
+		$('.room').hide();
+	},
+
+	generateRoomID:function(){
+		//var _ = this;
+		var text = "";
+		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		for( var i=0; i < 8; i++ )text += possible.charAt(Math.floor(Math.random() * possible.length));
+	 	return text;
+	},
+
+	initCreateRoom:function(){
+		var _ = this;
+		_.roomID = _.generateRoomID();
+		console.log('New Room is found at: ',_.roomID);
+		var ask = prompt('Please type your desired public access code','');
+		console.log('accessCode: ',ask);
+		_.roomAccessCode = ask
+				
+		if(_.roomAccessCode !== null){
+			// build room on server
+			_.socket.emit('newRoom', { room:_.roomID, accessCode:_.roomAccessCode } );
+		}
+				
+	},
+
+	initJoinRoom:function(){
+		var _ = this;
+		$('#joinroom').show();
+		$('#start').hide();
+		
+		$('#joinroom').find('button[type=submit]').click(function(){
+			var roomID = $('#joinroom').find('input').val();
+			console.log(roomID);
+			if(roomID != null){
+				_.socket.emit('checkRoomExsists', roomID);
+			}
+		});
+				
 	},
 
 	// Start Own Webcam

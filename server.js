@@ -21,6 +21,7 @@ server.listen(1234, function(){
 var io = io.listen(server);
 
 var clients = {};
+var rooms = {};
 
 io.sockets.on('connection', function(socket){
 
@@ -41,9 +42,30 @@ io.sockets.on('connection', function(socket){
 		socket.broadcast.emit('requestingStreams', {requestingUser:socket.id});
 	}
 	
+	socket.on('newRoom',function(data){
+		console.log(data);
+		socket.set('room', data.room, function(){ 
+			console.log('room ' + data.room + ' saved');
+			rooms[data.room] = { roomID:data.room, accessCode:data.accessCode, creator:socket.id, created: new Date()  };
+			console.log(rooms);
+			socket.join(data.room);
+			io.sockets.socket(socket.id).emit('roomCreated', { message:'Your room has been created', room:rooms[data.room] });
+		});
+	});
+
 	socket.on('userNotBroadcasting',function(data){
 		io.sockets.socket(data).emit('apologyNoVideo', 'Sorry this user is not broadcasting.'); 
 	});
+
+	socket.on('checkRoomExsists',function(data){
+		for( data in rooms){
+			console.log('room exsists');
+			socket.join(data);
+			io.sockets.socket(socket.id).emit('roomExists', { message:'You have joined the requested room', room:rooms[data] });
+		}
+	});
+
+
 
 	socket.on('sendingVideoStream',function(data){
 		io.sockets.socket(data.requestedUser).emit('watchMyStream', { stream:data.video, message:'here is my requested video stream', user:socket.id }); 
