@@ -153,13 +153,13 @@ window.camera = {
 	requestingStreams:function(userID){
 		var _ = this;
 		console.log(userID+' requested stream');
-		_.socket.emit('sendingVideoStream', { video:_.selfVideo, requestedUser:userID });
+		_.socket.emit('sendingVideoStream', { video:_.selfVideo, requestedUser:userID, room:_.roomID });
 	},
 
 	// Socket Methods
 	socketBroadcastStream:function(imageData){
 		var _ = this;
-		_.socket.emit('stream',imageData);
+		_.socket.emit('stream',{data:imageData, room:_.roomID});
 	},
 
 	socketStoreStreams:function(data){
