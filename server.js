@@ -38,7 +38,7 @@ io.configure('development', function(){
 	io.enable('browser client etag');          // apply etag caching logic based on version number
 	io.enable('browser client gzip');          // gzip the file
  	io.set('transports', ['websocket']);
-   	//io.set('log level', 2);
+   	io.set('log level', 2);
    	io.set('log color', true);
 });
 
@@ -76,9 +76,9 @@ io.sockets.on('connection', function(socket){
 		io.sockets.socket(data).emit('apologyNoVideo', 'Sorry this user is not broadcasting.'); 
 	});
 
-	socket.on('checkRoomExists',function(data){
+	socket.on('checkRoomExsists',function(data){
 		if( data in rooms){
-			console.log('room exists');
+			console.log('room exsists');
 			socket.join(data);
 			io.sockets.socket(socket.id).emit('roomExists', { message:'You have joined the requested room', room:rooms[data] });
 			console.log(rooms[data]);
@@ -107,6 +107,8 @@ io.sockets.on('connection', function(socket){
   		//console.log(data);
   		socket.broadcast.emit('userStream', { stream:data, user:socket.id });
   		//io.sockets.in(data.room).emit('userStream', { stream:data.stream, user:socket.id });
+  		//socket.broadcast.emit('userStream', { stream:data.data, user:socket.id });
+  		io.sockets.in(data.room).emit('userStream', { stream:data.data, user:socket.id });
   	});
 
 });

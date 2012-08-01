@@ -1,7 +1,7 @@
 $(function() {
     // Stuff to do as soon as the DOM is ready;
 
-    var socket = io.connect('http://192.168.1.95:1234');
+    var socket = io.connect('http://localhost:1234');
     camera.socket = socket;
 
     $('#start').show();
