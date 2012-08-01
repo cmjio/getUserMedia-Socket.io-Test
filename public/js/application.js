@@ -78,7 +78,7 @@ window.camera = {
 			var roomID = $('#joinroom').find('input').val();
 			console.log(roomID);
 			if(roomID != null){
-				_.socket.emit('checkRoomExsists', roomID);
+				_.socket.emit('checkRoomExists', roomID);
 			}
 		});
 				

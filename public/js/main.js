@@ -1,7 +1,7 @@
 $(function() {
     // Stuff to do as soon as the DOM is ready;
 
-    var socket = io.connect('http://192.168.1.43:1234');
+    var socket = io.connect('http://192.168.1.95:1234');
     camera.socket = socket;
 
     $('#start').show();
@@ -30,7 +30,11 @@ $(function() {
     });
 
     socket.on('roomExists',function(data) {
-        console.log(data.message,data.room);   
+        console.log(data.message,data.room);
+        $('.room').show();
+        $('#joinroom').hide();
+        window.location.hash = '!/'+data.room.roomID;
+
     });
 
     socket.on('roomCreated',function(data) {
@@ -56,6 +60,10 @@ $(function() {
         friendVideo.attr('src',data.stream);
     });
 
+    socket.on('roomList', function (data) {
+        console.log(data.list);
+    });
+
     socket.on('apologyNoVideo', function (data) {
         console.log(data);
     });
@@ -65,6 +73,9 @@ $(function() {
         delete data.message;
         camera.videoStreams.push(data);
         camera.videoStreams[data.user] = data;
+        $('.room').show();
+        $('#joinroom').hide();
+        $('#friend').show();
     });
 
     // Check for new users and show streams;
